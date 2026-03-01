@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to Microsoft Dynamics 365</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ===== FSI BRAND THEME (Light default) ===== */
+  :root {
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --surface2: #f2f0ec;
+    --border: #e2ddd6;
+    --blue: #2233cc;          /* FSI cobalt blue */
+    --coral: #f05a52;         /* FSI coral/red */
+    --accent: #2233cc;        /* primary interactive = blue */
+    --accent2: #f05a52;       /* secondary = coral */
+    --accent3: #1a9e6e;       /* success green */
+    --text: #1a1a2e;
+    --text-body: #3d3d52;
+    --muted: #8a8a9a;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --progress-h: 4px;
+    --table-row-hover: #f2f0ec;
+    --topbar-bg: #ffffff;
+    --sidebar-bg: #ffffff;
+  }
+
+  /* ===== DARK MODE ===== */
+  [data-theme="dark"] {
+    --bg: #0f1118;
+    --surface: #161b27;
+    --surface2: #1d2436;
+    --border: #252d40;
+    --blue: #4d66ff;
+    --coral: #f05a52;
+    --accent: #4d66ff;
+    --accent2: #f05a52;
+    --accent3: #12b981;
+    --text: #e8eaf4;
+    --text-body: #a0a8c0;
+    --muted: #5a6480;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --table-row-hover: #1d2436;
+    --topbar-bg: #161b27;
+    --sidebar-bg: #161b27;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  /* ---- SHELL ---- */
+  .shell {
+    display: grid;
+    grid-template-rows: 56px 1fr;
+    grid-template-columns: 260px 1fr;
+    height: 100vh;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    grid-column: 1 / -1;
+    background: var(--topbar-bg);
+    border-bottom: 3px solid var(--coral);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    z-index: 10;
+  }
+  .topbar-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .topbar-title {
+    font-size: 16px;
+    color: var(--muted);
+    flex: 1;
+    font-weight: 500;
+  }
+  .theme-toggle {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .theme-toggle:hover { background: var(--border); }
+  .topbar-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    color: var(--muted);
+  }
+  .topbar-bar {
+    width: 160px;
+    height: var(--progress-h);
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .topbar-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--coral));
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+  .score-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 16px;
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 20px 0;
+  }
+  .sidebar-section {
+    padding: 8px 16px 4px;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 700;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--muted);
+    position: relative;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active {
+    background: rgba(34,51,204,0.06);
+    color: var(--blue);
+    border-right: 3px solid var(--coral);
+    font-weight: 600;
+  }
+  .nav-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    background: var(--surface2);
+  }
+  .nav-item.active .nav-icon { background: rgba(34,51,204,0.1); }
+  .nav-check {
+    margin-left: auto;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .nav-check.done { opacity: 1; }
+
+  /* MAIN */
+  .main {
+    overflow-y: auto;
+    padding: 40px 48px;
+    position: relative;
+  }
+
+  /* SLIDES */
+  .slide { display: none; animation: fadeSlide 0.4s ease; }
+  .slide.active { display: block; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Typography */
+  .slide-tag {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--coral);
+    background: rgba(240,90,82,0.08);
+    border: 1px solid rgba(240,90,82,0.25);
+    border-radius: 4px;
+    padding: 3px 10px;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    color: var(--blue);
+  }
+  h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--blue);
+  }
+  h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--blue);
+  }
+  p { font-size: 16px; line-height: 1.5; color: var(--text-body); margin-bottom: 16px; }
+  .lead { font-family: 'Lora', serif; font-size: 18px; color: var(--text); opacity: 0.9; line-height: 1.5; font-weight: 400; }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { border-color: var(--coral); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(240,90,82,0.1); }
+  .card-icon { font-size: 28px; margin-bottom: 12px; }
+  .card h3 { font-size: 16px; margin-bottom: 6px; color: var(--blue); }
+  .card p { font-size: 16px; margin: 0; color: var(--text-body); }
+
+  /* Table */
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+  }
+  .styled-table th {
+    text-align: left;
+    padding: 10px 16px;
+    background: rgba(34,51,204,0.05);
+    color: var(--blue);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--blue);
+    font-weight: 700;
+  }
+  .styled-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-body);
+    font-size: 16px;
+  }
+  .styled-table tr:hover td { background: var(--table-row-hover); }
+
+  /* Architecture diagram */
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 28px 0;
+  }
+  .arch-layer {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    position: relative;
+  }
+  .arch-arrow {
+    font-size: 18px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* Callout */
+  .callout {
+    border-left: 3px solid var(--blue);
+    background: rgba(34,51,204,0.04);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
+  .callout.green { border-color: var(--accent3); background: rgba(16,185,129,0.05); }
+  .callout.purple { border-color: var(--coral); background: rgba(240,90,82,0.05); }
+  .callout p { margin: 0; font-size: 16px; }
+
+  /* Quiz */
+  .quiz-q {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .quiz-opt {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text);
+  }
+  .quiz-opt:hover:not(.disabled) { border-color: var(--blue); background: rgba(34,51,204,0.04); }
+  .quiz-opt.correct { border-color: var(--accent3); background: rgba(16,185,129,0.1); color: var(--accent3); }
+  .quiz-opt.wrong { border-color: var(--danger); background: rgba(239,68,68,0.08); color: var(--danger); }
+  .quiz-opt.disabled { cursor: default; }
+  .opt-letter {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+  .quiz-feedback {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 16px;
+    display: none;
+    margin-bottom: 16px;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+  .quiz-feedback.wrong { background: rgba(239,68,68,0.08); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+  .quiz-counter {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  /* Drag match */
+  .match-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .match-col-label { font-size: 16px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
+  .match-term {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    cursor: grab;
+    transition: border-color 0.2s, opacity 0.2s;
+    user-select: none;
+    color: var(--text);
+  }
+  .match-term.dragging { opacity: 0.4; }
+  .match-term.matched { background: rgba(16,185,129,0.08); border-color: var(--accent3); cursor: default; }
+  .match-slot {
+    background: var(--surface);
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 16px;
+    margin-bottom: 8px;
+    min-height: 46px;
+    transition: border-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-body);
+  }
+  .match-slot.over { border-color: var(--blue); background: rgba(34,51,204,0.04); }
+  .match-slot.correct { border-color: var(--accent3); background: rgba(16,185,129,0.06); }
+  .match-slot.wrong-ans { border-color: var(--danger); background: rgba(239,68,68,0.06); }
+  .slot-label { color: var(--muted); font-size: 16px; flex-shrink: 0; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .btn-primary {
+    background: var(--blue);
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .btn-primary:hover { background: #1a28b0; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(34,51,204,0.3); }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-weight: 600;
+  }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-row { display: flex; gap: 12px; margin-top: 24px; align-items: center; }
+
+  /* Module complete */
+  .complete-hero {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .complete-icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+    display: block;
+    animation: pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+  @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+  .final-score {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--blue), var(--coral));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .score-label { font-size: 16px; color: var(--muted); margin-top: 4px; margin-bottom: 32px; }
+
+  /* Highlight chips */
+  .chip {
+    display: inline-block;
+    background: rgba(34,51,204,0.07);
+    border: 1px solid rgba(34,51,204,0.2);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 16px;
+    color: var(--blue);
+    font-weight: 500;
+    margin: 3px;
+    cursor: default;
+    transition: transform 0.2s cubic-bezier(0.175,0.885,0.32,1.275), background 0.2s, box-shadow 0.2s;
+  }
+  .chip:hover {
+    transform: scale(1.18);
+    background: rgba(34,51,204,0.13);
+    box-shadow: 0 4px 14px rgba(34,51,204,0.15);
+    z-index: 1;
+    position: relative;
+  }
+
+  /* Accordion */
+  .accordion { margin: 16px 0; }
+  .acc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: border-color 0.2s;
+    margin-bottom: 2px;
+  }
+  .acc-head:hover { border-color: var(--blue); }
+  .acc-head.open { border-color: var(--blue); border-radius: 8px 8px 0 0; margin-bottom: 0; }
+  .acc-body {
+    display: none;
+    background: rgba(34,51,204,0.03);
+    border: 1px solid var(--blue);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 16px 18px;
+    font-size: 16px;
+    color: var(--text-body);
+    line-height: 1.55;
+    margin-bottom: 2px;
+  }
+  .acc-body.open { display: block; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  /* Module badges */
+  .module-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 16px;
+    color: var(--muted);
+    margin: 4px;
+  }
+  .module-badge.earned { color: var(--blue); border-color: rgba(34,51,204,0.3); background: rgba(34,51,204,0.06); }
+
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* Hotspot interactive */
+  .hotspot-wrap { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin: 20px 0; }
+  .hotspot-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 4px;
+  }
+  .hotspot-item:hover { background: var(--surface2); }
+  .hotspot-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .hotspot-detail {
+    font-size: 16px; color: var(--text-body); line-height: 1.5;
+    display: none; margin-top: 4px;
+  }
+  .hotspot-detail.show { display: block; }
+  .hotspot-title { font-size: 16px; font-weight: 600; color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-logo">
+      <span style="display:inline-flex;align-items:center;gap:10px;">
+        <span style="background:#f05a52;color:white;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:16px;letter-spacing:0.08em;padding:5px 10px;border-radius:6px;">FSI</span>
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:16px;color:var(--blue);letter-spacing:0.01em;">future skills institute</span>
+      </span>
+    </div>
+    <div class="topbar-title">Introduction to Microsoft Dynamics 365</div>
+    <div class="topbar-progress-wrap">
+      <span id="progressLabel">0%</span>
+      <div class="topbar-bar"><div class="topbar-bar-fill" id="progressFill" style="width:0%"></div></div>
+      <span>7 modules</span>
+    </div>
+    <div class="score-badge">🏆 <span id="scoreDisplay">0</span> pts</div>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">Course Modules</div>
+    <div class="nav-item active" onclick="goto(0)" id="nav0">
+      <div class="nav-icon">🏠</div>What is Dynamics 365?
+      <div class="nav-check" id="check0">✓</div>
+    </div>
+    <div class="nav-item" onclick="goto(1)" id="nav1">
+      <div class="nav-icon">🗄️</div>Dataverse Foundation
+      <div class="nav-check" id="check1">✓</div>
+    </div>
+    <div class="nav-item" onclick="goto(2)" id="nav2">
+      <div class="nav-icon">🧩</div>Core Applications
+      <div class="nav-check" id="check2">✓</div>
+    </div>
+    <div class="nav-item" onclick="goto(3)" id="nav3">
+      <div class="nav-icon">🏗️</div>Architecture Overview
+      <div class="nav-check" id="check3">✓</div>
+    </div>
+    <div class="nav-item" onclick="goto(4)" id="nav4">
+      <div class="nav-icon">⚙️</div>Config vs. Development
+      <div class="nav-check" id="check4">✓</div>
+    </div>
+    <div class="nav-item" onclick="goto(5)" id="nav5">
+      <div class="nav-icon">🧠</div>Key Terms
+      <div class="nav-check" id="check5">✓</div>
+    </div>
+    <div class="nav-item" onclick="goto(6)" id="nav6">
+      <div class="nav-icon">🎯</div>Final Assessment
+      <div class="nav-check" id="check6">✓</div>
+    </div>
+    <div class="nav-item" onclick="goto(7)" id="nav7">
+      <div class="nav-icon">🎓</div>Course Complete
+      <div class="nav-check" id="check7">✓</div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- SLIDE 0: Intro -->
+    <div class="slide active" id="slide0">
+      <div class="slide-tag">Module 1 · Introduction</div>
+      <h1>What is Microsoft Dynamics 365?</h1>
+      <p class="lead">A cloud-based business platform that unifies CRM, ERP, analytics, and AI into one connected ecosystem.</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">🗃️</div>
+          <h3>Database</h3>
+          <p>Structured storage for all your business data via Dataverse.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚙️</div>
+          <h3>Workflow Engine</h3>
+          <p>Automate processes — from case assignment to approval chains.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔌</div>
+          <h3>API Platform</h3>
+          <p>Connect to external systems, cloud services, and third-party apps.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <h3>Business Intelligence</h3>
+          <p>AI-driven insights and dashboards powered by Power BI.</p>
+        </div>
+      </div>
+
+      <h2>Why Organizations Use It</h2>
+      <p>Modern companies generate data everywhere — sales, support, marketing, finance, websites, mobile apps. Dynamics 365 centralizes this so teams can:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;">
+        <span class="chip">📁 Track customer interactions</span>
+        <span class="chip">🔄 Automate workflows</span>
+        <span class="chip">📈 Generate reports</span>
+        <span class="chip">🔗 Integrate systems</span>
+        <span class="chip">💡 Make data-driven decisions</span>
+      </div>
+
+      <div class="callout">
+        <p>💡 <strong>Core Concept:</strong> Dynamics 365 is a <em>business operating system</em> built on data. Everything — dashboards, automation, reporting — flows from structured, validated data.</p>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Core Entities (Tables)</h2>
+      <p>Dynamics 365 uses specific terminology for common business concepts:</p>
+      <table class="styled-table">
+        <tr><th>Business Concept</th><th>Dynamics 365 Term</th></tr>
+        <tr><td>Customer</td><td>Account</td></tr>
+        <tr><td>Contact Person</td><td>Contact</td></tr>
+        <tr><td>Sales Opportunity</td><td>Opportunity</td></tr>
+        <tr><td>Support Request</td><td>Case</td></tr>
+        <tr><td>Activity</td><td>Task / Email / Call</td></tr>
+      </table>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="nextSlide(0)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 1: Dataverse -->
+    <div class="slide" id="slide1">
+      <div class="slide-tag">Module 2 · Data Platform</div>
+      <h1>Microsoft Dataverse</h1>
+      <p class="lead">The secure cloud database that powers everything in Dynamics 365.</p>
+
+      <div class="callout purple">
+        <p>🧱 Think of Dataverse as: <strong>SQL database + permissions + APIs + automation layer</strong></p>
+      </div>
+
+      <h2>What Dataverse Provides</h2>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">🗂️</div>
+          <h3>Tables (Data Storage)</h3>
+          <p>Structured entities like Accounts, Contacts, Cases, and custom tables you create.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔗</div>
+          <h3>Relationships</h3>
+          <p>Link records across tables — e.g., a Contact belongs to an Account.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <h3>Security Roles</h3>
+          <p>Row and field-level security. Control who sees and edits what.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📜</div>
+          <h3>Business Rules</h3>
+          <p>Validation logic without code — show/hide fields, require values, set defaults.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌐</div>
+          <h3>APIs</h3>
+          <p>OData REST APIs for reading and writing data programmatically.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🕵️</div>
+          <h3>Audit Tracking</h3>
+          <p>Full history of who changed what and when on any record.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Click to explore key Dataverse concepts</h2>
+      <div class="hotspot-wrap">
+        <div class="hotspot-item" onclick="toggleHotspot(this)">
+          <div class="hotspot-num">1</div>
+          <div>
+            <div class="hotspot-title">Record vs. Entity</div>
+            <div class="hotspot-detail">An <strong>Entity</strong> (also called a Table) defines the structure — like a blueprint. A <strong>Record</strong> is a single row of data in that table. Example: "Accounts" is the entity; "Contoso Ltd." is a record.</div>
+          </div>
+        </div>
+        <div class="hotspot-item" onclick="toggleHotspot(this)">
+          <div class="hotspot-num">2</div>
+          <div>
+            <div class="hotspot-title">Environments</div>
+            <div class="hotspot-detail">Dataverse is scoped to an <strong>Environment</strong> (Dev, Test, or Production). Each environment is independent — changes in Dev don't affect Prod until you deploy a Solution package.</div>
+          </div>
+        </div>
+        <div class="hotspot-item" onclick="toggleHotspot(this)">
+          <div class="hotspot-num">3</div>
+          <div>
+            <div class="hotspot-title">Solutions</div>
+            <div class="hotspot-detail">A <strong>Solution</strong> is a container for customizations (new tables, fields, workflows, forms). It's how you package and move changes between environments — like a deployment artefact.</div>
+          </div>
+        </div>
+        <div class="hotspot-item" onclick="toggleHotspot(this)">
+          <div class="hotspot-num">4</div>
+          <div>
+            <div class="hotspot-title">Views and Forms</div>
+            <div class="hotspot-detail">A <strong>View</strong> is a filtered list of records (like a saved query). A <strong>Form</strong> is the UI that lets users read and edit a single record. Both are customizable without code.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goto(0)">← Back</button>
+        <button class="btn btn-primary" onclick="nextSlide(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Applications -->
+    <div class="slide" id="slide2">
+      <div class="slide-tag">Module 3 · Applications</div>
+      <h1>Core Dynamics 365 Apps</h1>
+      <p class="lead">Dynamics 365 is modular — organizations install what they need. Each app is purpose-built for a business function.</p>
+
+      <div class="accordion">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          💼 <strong>Sales</strong> — Pipeline & opportunity management <span>▼</span>
+        </div>
+        <div class="acc-body">
+          <strong>Used by:</strong> Sales teams, account managers<br><br>
+          Tracks the full sales cycle: lead capture → qualification → opportunity → quote → close. Key features include pipeline forecasting, activity tracking (calls, emails, meetings), and AI-powered next best action suggestions.
+        </div>
+
+        <div class="acc-head" onclick="toggleAcc(this)">
+          🎧 <strong>Customer Service</strong> — Support tickets & cases <span>▼</span>
+        </div>
+        <div class="acc-body">
+          <strong>Used by:</strong> Support agents, service managers<br><br>
+          Manages support Cases from creation to resolution. Features include routing queues, SLA tracking, knowledge base articles, and real-time sentiment analysis. Integrates with chat, email, and phone channels.
+        </div>
+
+        <div class="acc-head" onclick="toggleAcc(this)">
+          📣 <strong>Marketing</strong> — Campaign automation & journeys <span>▼</span>
+        </div>
+        <div class="acc-body">
+          <strong>Used by:</strong> Marketing teams, campaign managers<br><br>
+          Builds multi-channel customer journeys — email campaigns, events, landing pages. Tracks engagement analytics (opens, clicks, conversions) and scores leads automatically for the sales team.
+        </div>
+
+        <div class="acc-head" onclick="toggleAcc(this)">
+          🏭 <strong>Finance & Operations</strong> — ERP core <span>▼</span>
+        </div>
+        <div class="acc-body">
+          <strong>Used by:</strong> Finance, warehouse, supply chain teams<br><br>
+          The ERP layer of Dynamics 365. Handles general ledger, accounts payable/receivable, inventory management, and supply chain visibility. Suitable for manufacturing, retail, and distribution industries.
+        </div>
+
+        <div class="acc-head" onclick="toggleAcc(this)">
+          ⚡ <strong>Power Platform Integration</strong> — Extend everything <span>▼</span>
+        </div>
+        <div class="acc-body">
+          Dynamics 365 connects seamlessly to:<br><br>
+          <strong>Power Apps</strong> — Build custom low-code applications on top of Dataverse<br>
+          <strong>Power Automate</strong> — Create automated flows triggered by Dynamics events<br>
+          <strong>Power BI</strong> — Visualize Dynamics data in rich interactive dashboards<br>
+          <strong>Azure</strong> — Cloud infrastructure, AI models, and data pipelines
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Quick Check</h2>
+      <div class="quiz-q">Which Dynamics 365 app would you use to track a customer support issue from creation to resolution?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkQ('slide2q1', this, false)">
+          <div class="opt-letter">A</div> Dynamics 365 Sales
+        </div>
+        <div class="quiz-opt" onclick="checkQ('slide2q1', this, true)">
+          <div class="opt-letter">B</div> Dynamics 365 Customer Service
+        </div>
+        <div class="quiz-opt" onclick="checkQ('slide2q1', this, false)">
+          <div class="opt-letter">C</div> Dynamics 365 Marketing
+        </div>
+        <div class="quiz-opt" onclick="checkQ('slide2q1', this, false)">
+          <div class="opt-letter">D</div> Power BI
+        </div>
+      </div>
+      <div class="quiz-feedback" id="slide2q1-feedback"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goto(1)">← Back</button>
+        <button class="btn btn-primary" onclick="nextSlide(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Architecture -->
+    <div class="slide" id="slide3">
+      <div class="slide-tag">Module 4 · Architecture</div>
+      <h1>System Architecture</h1>
+      <p class="lead">Understanding how the layers of Dynamics 365 connect gives you a mental map for troubleshooting and design.</p>
+
+      <div class="arch-diagram">
+        <div class="arch-layer" style="background:rgba(34,51,204,0.07);border:1px solid rgba(34,51,204,0.25);color:var(--text);">👤 User Interface (Model-Driven Apps, Portals)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer" style="background:rgba(240,90,82,0.07);border:1px solid rgba(240,90,82,0.25);color:var(--text);">📱 Dynamics 365 Apps (Sales, Service, Marketing…)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer" style="background:rgba(34,51,204,0.07);border:1px solid rgba(34,51,204,0.25);color:var(--text);">⚙️ Business Logic (Plugins, Workflows, Power Automate)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer" style="background:rgba(240,90,82,0.1);border:2px solid var(--coral);color:var(--text);font-weight:600;">🗄️ Dataverse (Tables, Security, Audit, APIs)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-layer" style="background:rgba(34,51,204,0.05);border:1px solid rgba(34,51,204,0.15);color:var(--text);">🌐 External Integrations (SQL, ERP, Cloud, 3rd Party APIs)</div>
+      </div>
+
+      <div class="callout green">
+        <p>✅ <strong>DevOps Workflow:</strong> Teams work in sandbox environments → customize components → validate → deploy via Solution packages → merge through source control (Git). This mirrors modern CI/CD practices.</p>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Real-World Workflow Example</h2>
+      <p>Follow a support ticket through the system:</p>
+      <div class="hotspot-wrap" style="padding:20px;">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--surface2);border-radius:8px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">1</div>
+            <span style="font-size:16px;color:var(--text-body);">Customer submits a support issue via web portal</span>
+          </div>
+          <div style="text-align:center;color:var(--muted);font-size:16px;">↓ Case record created in Dataverse</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--surface2);border-radius:8px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--coral);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">2</div>
+            <span style="font-size:16px;color:var(--text-body);">Power Automate workflow auto-assigns a technician based on skill rules</span>
+          </div>
+          <div style="text-align:center;color:var(--muted);font-size:16px;">↓ Business logic validates &amp; routes</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--surface2);border-radius:8px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">3</div>
+            <span style="font-size:16px;color:var(--text-body);">Technician resolves the case; status updated in Dataverse</span>
+          </div>
+          <div style="text-align:center;color:var(--muted);font-size:16px;">↓ Data flows to reporting</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--surface2);border-radius:8px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--coral);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">4</div>
+            <span style="font-size:16px;color:var(--text-body);">Manager reviews performance metrics in Power BI dashboard</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Quick Check</h2>
+      <div class="quiz-q">Where is all business data stored in the Dynamics 365 architecture?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkQ('slide3q1', this, false)">
+          <div class="opt-letter">A</div> Power BI
+        </div>
+        <div class="quiz-opt" onclick="checkQ('slide3q1', this, false)">
+          <div class="opt-letter">B</div> Azure SQL Database
+        </div>
+        <div class="quiz-opt" onclick="checkQ('slide3q1', this, true)">
+          <div class="opt-letter">C</div> Dataverse
+        </div>
+        <div class="quiz-opt" onclick="checkQ('slide3q1', this, false)">
+          <div class="opt-letter">D</div> SharePoint
+        </div>
+      </div>
+      <div class="quiz-feedback" id="slide3q1-feedback"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goto(2)">← Back</button>
+        <button class="btn btn-primary" onclick="nextSlide(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Config vs Dev -->
+    <div class="slide" id="slide4">
+      <div class="slide-tag">Module 5 · Customization</div>
+      <h1>Configuration vs. Development</h1>
+      <p class="lead">One of Dynamics 365's strengths: many changes require <em>configuration</em>, not coding. Knowing when to use each is a core skill.</p>
+
+      <div class="two-col">
+        <div class="card" style="border-top:3px solid var(--blue);border-color:rgba(34,51,204,0.2);">
+          <div style="font-size:16px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);font-weight:700;margin-bottom:12px;">⚙️ Configuration (Low-Code)</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>✅</span> Add fields to a table</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>✅</span> Modify form layout</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>✅</span> Create Power Automate flows</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>✅</span> Define business rules</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>✅</span> Set security roles</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>✅</span> Build dashboards and views</div>
+          </div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--coral);border-color:rgba(240,90,82,0.2);">
+          <div style="font-size:16px;text-transform:uppercase;letter-spacing:0.1em;color:var(--coral);font-weight:700;margin-bottom:12px;">💻 Development (Pro-Code)</div>
+          <p style="font-size:16px;margin-bottom:10px;">Code-based changes for complex logic or integrations.</p>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>🔷</span> JavaScript form scripting</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>🔷</span> .NET Plugins (server-side logic)</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>🔷</span> REST/OData API integrations</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>🔷</span> External system sync</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>🔷</span> Custom web resources</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:16px;color:var(--text-body);"><span>🔷</span> PCF (Power Apps Components)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p>⚖️ <strong>Rule of thumb:</strong> Always try configuration first. If it can't achieve the business requirement, then escalate to development. This keeps the system maintainable and upgrade-safe.</p>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Which approach would you use?</h2>
+      <p style="font-size:16px;color:var(--muted);">Select the correct approach for each scenario:</p>
+
+      <div id="scenario-quiz" style="margin-top:16px;">
+        <div style="margin-bottom:16px;">
+          <p style="font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text);">📋 Scenario 1: Make a phone number field required when a lead's status is "Qualified"</p>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-secondary" onclick="answerScenario(1, true, this)" style="font-size:16px;padding:8px 16px;">⚙️ Configuration</button>
+            <button class="btn btn-secondary" onclick="answerScenario(1, false, this)" style="font-size:16px;padding:8px 16px;">💻 Development</button>
+          </div>
+          <div id="scenario1-result" style="font-size:16px;margin-top:6px;"></div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <p style="font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text);">🔄 Scenario 2: Sync Dynamics customer data to a legacy on-premise SQL database nightly</p>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-secondary" onclick="answerScenario(2, false, this)" style="font-size:16px;padding:8px 16px;">⚙️ Configuration</button>
+            <button class="btn btn-secondary" onclick="answerScenario(2, true, this)" style="font-size:16px;padding:8px 16px;">💻 Development</button>
+          </div>
+          <div id="scenario2-result" style="font-size:16px;margin-top:6px;"></div>
+        </div>
+        <div>
+          <p style="font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text);">📊 Scenario 3: Create a dashboard showing open cases by priority</p>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-secondary" onclick="answerScenario(3, true, this)" style="font-size:16px;padding:8px 16px;">⚙️ Configuration</button>
+            <button class="btn btn-secondary" onclick="answerScenario(3, false, this)" style="font-size:16px;padding:8px 16px;">💻 Development</button>
+          </div>
+          <div id="scenario3-result" style="font-size:16px;margin-top:6px;"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goto(3)">← Back</button>
+        <button class="btn btn-primary" onclick="nextSlide(4)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Key Terms -->
+    <div class="slide" id="slide5">
+      <div class="slide-tag">Module 6 · Glossary</div>
+      <h1>Key Terms</h1>
+      <p class="lead">Master the vocabulary and you'll navigate Dynamics 365 documentation and conversations with confidence.</p>
+
+      <div id="match-game">
+        <div class="two-col" style="margin-bottom:12px;">
+          <div>
+            <div class="match-col-label">Terms — drag to match</div>
+            <div id="terms-pool">
+              <div class="match-term" draggable="true" data-term="Dataverse" ondragstart="dragStart(event)">Dataverse</div>
+              <div class="match-term" draggable="true" data-term="Solution" ondragstart="dragStart(event)">Solution</div>
+              <div class="match-term" draggable="true" data-term="Environment" ondragstart="dragStart(event)">Environment</div>
+              <div class="match-term" draggable="true" data-term="View" ondragstart="dragStart(event)">View</div>
+              <div class="match-term" draggable="true" data-term="Workflow" ondragstart="dragStart(event)">Workflow</div>
+            </div>
+          </div>
+          <div>
+            <div class="match-col-label">Definitions — drop here</div>
+            <div class="match-slot" data-answer="Workflow" ondragover="dragOver(event)" ondrop="dropTerm(event)" ondragleave="dragLeave(event)">
+              <span class="slot-label">?</span>An automated process triggered by data changes
+            </div>
+            <div class="match-slot" data-answer="Dataverse" ondragover="dragOver(event)" ondrop="dropTerm(event)" ondragleave="dragLeave(event)">
+              <span class="slot-label">?</span>The core secure cloud database platform
+            </div>
+            <div class="match-slot" data-answer="Environment" ondragover="dragOver(event)" ondrop="dropTerm(event)" ondragleave="dragLeave(event)">
+              <span class="slot-label">?</span>Dev / Test / Prod workspace isolation
+            </div>
+            <div class="match-slot" data-answer="Solution" ondragover="dragOver(event)" ondrop="dropTerm(event)" ondragleave="dragLeave(event)">
+              <span class="slot-label">?</span>A deployable package of customizations
+            </div>
+            <div class="match-slot" data-answer="View" ondragover="dragOver(event)" ondrop="dropTerm(event)" ondragleave="dragLeave(event)">
+              <span class="slot-label">?</span>A filtered list of records in a table
+            </div>
+          </div>
+        </div>
+        <div id="match-feedback" style="display:none;padding:12px 16px;border-radius:8px;font-size:16px;margin-bottom:16px;"></div>
+        <button class="btn btn-secondary" onclick="checkMatches()" style="margin-bottom:16px;">Check Matches</button>
+        <button class="btn btn-secondary" onclick="resetMatches()" style="margin-bottom:16px;margin-left:8px;">↺ Reset</button>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Full Glossary</h2>
+      <table class="styled-table">
+        <tr><th>Term</th><th>Meaning</th></tr>
+        <tr><td>Dataverse</td><td>Core data platform underpinning all Dynamics 365 apps</td></tr>
+        <tr><td>Entity / Table</td><td>A business data object (e.g. Account, Contact, Case)</td></tr>
+        <tr><td>Record</td><td>A single row of data in a table</td></tr>
+        <tr><td>Form</td><td>The user interface for viewing and editing a record</td></tr>
+        <tr><td>View</td><td>A filtered, sorted list of records</td></tr>
+        <tr><td>Solution</td><td>A deployable package of customizations</td></tr>
+        <tr><td>Environment</td><td>An isolated Dev / Test / Prod workspace</td></tr>
+        <tr><td>Workflow</td><td>An automated process triggered by events or schedules</td></tr>
+        <tr><td>Plugin</td><td>Server-side .NET code extending Dataverse behaviour</td></tr>
+        <tr><td>PCF Component</td><td>Custom UI control built with TypeScript/React</td></tr>
+      </table>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goto(4)">← Back</button>
+        <button class="btn btn-primary" onclick="nextSlide(5)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Final Quiz -->
+    <div class="slide" id="slide6">
+      <div class="slide-tag">Module 7 · Assessment</div>
+      <h1>Final Assessment</h1>
+      <p class="lead">Test your knowledge across all modules. You need <strong>70%</strong> to pass.</p>
+
+      <div id="final-quiz">
+        <div class="quiz-counter" id="fq-counter">Question 1 of 6</div>
+
+        <!-- Q1 -->
+        <div class="fq-question" id="fq1">
+          <div class="quiz-q">What is the primary data storage platform that powers Dynamics 365?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="finalQ(1, this, false)"><div class="opt-letter">A</div>Azure SQL Server</div>
+            <div class="quiz-opt" onclick="finalQ(1, this, false)"><div class="opt-letter">B</div>SharePoint Lists</div>
+            <div class="quiz-opt" onclick="finalQ(1, this, true)"><div class="opt-letter">C</div>Microsoft Dataverse</div>
+            <div class="quiz-opt" onclick="finalQ(1, this, false)"><div class="opt-letter">D</div>Cosmos DB</div>
+          </div>
+          <div class="quiz-feedback" id="fq1-feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="fq-question" id="fq2" style="display:none;">
+          <div class="quiz-q">In Dynamics 365 terminology, what is an "Account"?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="finalQ(2, this, false)"><div class="opt-letter">A</div>A user login credential</div>
+            <div class="quiz-opt" onclick="finalQ(2, this, true)"><div class="opt-letter">B</div>A customer (organisation or company)</div>
+            <div class="quiz-opt" onclick="finalQ(2, this, false)"><div class="opt-letter">C</div>A financial ledger entry</div>
+            <div class="quiz-opt" onclick="finalQ(2, this, false)"><div class="opt-letter">D</div>A support ticket</div>
+          </div>
+          <div class="quiz-feedback" id="fq2-feedback"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="fq-question" id="fq3" style="display:none;">
+          <div class="quiz-q">Which of these tasks is an example of LOW-CODE configuration (not development)?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="finalQ(3, this, false)"><div class="opt-letter">A</div>Writing a .NET Plugin to execute on record save</div>
+            <div class="quiz-opt" onclick="finalQ(3, this, false)"><div class="opt-letter">B</div>Calling an external REST API via JavaScript</div>
+            <div class="quiz-opt" onclick="finalQ(3, this, true)"><div class="opt-letter">C</div>Adding a new field to the Account form</div>
+            <div class="quiz-opt" onclick="finalQ(3, this, false)"><div class="opt-letter">D</div>Building a PCF custom control component</div>
+          </div>
+          <div class="quiz-feedback" id="fq3-feedback"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="fq-question" id="fq4" style="display:none;">
+          <div class="quiz-q">What does a "Solution" contain in Dynamics 365?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="finalQ(4, this, false)"><div class="opt-letter">A</div>Live production data and records</div>
+            <div class="quiz-opt" onclick="finalQ(4, this, true)"><div class="opt-letter">B</div>A deployable package of customizations (fields, forms, flows)</div>
+            <div class="quiz-opt" onclick="finalQ(4, this, false)"><div class="opt-letter">C</div>A security policy for user access</div>
+            <div class="quiz-opt" onclick="finalQ(4, this, false)"><div class="opt-letter">D</div>An Azure resource group</div>
+          </div>
+          <div class="quiz-feedback" id="fq4-feedback"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="fq-question" id="fq5" style="display:none;">
+          <div class="quiz-q">Power BI connects to Dynamics 365 data to provide what capability?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="finalQ(5, this, false)"><div class="opt-letter">A</div>Email campaign automation</div>
+            <div class="quiz-opt" onclick="finalQ(5, this, false)"><div class="opt-letter">B</div>Customer portal self-service</div>
+            <div class="quiz-opt" onclick="finalQ(5, this, false)"><div class="opt-letter">C</div>Server-side business logic execution</div>
+            <div class="quiz-opt" onclick="finalQ(5, this, true)"><div class="opt-letter">D</div>Analytics dashboards and data visualisation</div>
+          </div>
+          <div class="quiz-feedback" id="fq5-feedback"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="fq-question" id="fq6" style="display:none;">
+          <div class="quiz-q">According to the mental model in this course, Dynamics 365 is best described as:</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="finalQ(6, this, false)"><div class="opt-letter">A</div>A standalone CRM application</div>
+            <div class="quiz-opt" onclick="finalQ(6, this, false)"><div class="opt-letter">B</div>A replacement for Microsoft Excel</div>
+            <div class="quiz-opt" onclick="finalQ(6, this, true)"><div class="opt-letter">C</div>A business operating system built on data</div>
+            <div class="quiz-opt" onclick="finalQ(6, this, false)"><div class="opt-letter">D</div>A project management tool</div>
+          </div>
+          <div class="quiz-feedback" id="fq6-feedback"></div>
+        </div>
+
+        <div id="fq-result" style="display:none;margin-top:24px;"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goto(5)">← Back</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Complete -->
+    <div class="slide" id="slide7">
+      <div class="complete-hero">
+        <span class="complete-icon">🎓</span>
+        <h1 style="font-size:32px;margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif;">Course Complete!</h1>
+        <p>You've completed the Introduction to Microsoft Dynamics 365</p>
+        <div class="final-score" id="finalScoreDisplay">—</div>
+        <div class="score-label">Final Score</div>
+
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:32px;" id="badges-wrap">
+          <div class="module-badge earned">🏠 What is D365?</div>
+          <div class="module-badge earned">🗄️ Dataverse</div>
+          <div class="module-badge earned">🧩 Core Apps</div>
+          <div class="module-badge earned">🏗️ Architecture</div>
+          <div class="module-badge earned">⚙️ Config vs Dev</div>
+          <div class="module-badge earned">🧠 Key Terms</div>
+          <div class="module-badge earned" id="assessment-badge">🎯 Assessment</div>
+        </div>
+
+        <div class="callout" style="max-width:480px;margin:0 auto 24px;text-align:left;">
+          <p>💡 <strong>What you've learned:</strong> Enterprise data modeling, CRM architecture, cloud deployment thinking, API integration concepts, and business-process alignment. You're not just learning software — you're learning how modern organisations operate digitally.</p>
+        </div>
+
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-secondary" onclick="restartCourse()">↺ Restart Course</button>
+          <button class="btn btn-primary" onclick="goto(6)">Review Assessment</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  let currentSlide = 0;
+  let score = 0;
+  const totalSlides = 8;
+  const completedSlides = new Set([0]);
+  let fqCurrent = 1;
+  let fqScore = 0;
+  const fqTotal = 6;
+  let draggedTerm = null;
+
+  function goto(n) {
+    document.getElementById('slide' + currentSlide).classList.remove('active');
+    document.getElementById('nav' + currentSlide)?.classList.remove('active');
+    currentSlide = n;
+    document.getElementById('slide' + n).classList.add('active');
+    document.getElementById('nav' + n)?.classList.add('active');
+    completedSlides.add(n);
+    updateProgress();
+    document.querySelector('.main').scrollTop = 0;
+  }
+
+  function nextSlide(from) {
+    markDone(from);
+    goto(from + 1);
+  }
+
+  function markDone(n) {
+    completedSlides.add(n);
+    const check = document.getElementById('check' + n);
+    if (check) check.classList.add('done');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const pct = Math.round((completedSlides.size / (totalSlides)) * 100);
+    document.getElementById('progressFill').style.width = Math.min(pct, 100) + '%';
+    document.getElementById('progressLabel').textContent = Math.min(pct, 100) + '%';
+  }
+
+  function addScore(pts) {
+    score += pts;
+    document.getElementById('scoreDisplay').textContent = score;
+  }
+
+  // Module quizzes
+  function checkQ(id, el, correct) {
+    const opts = el.parentElement.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.classList.add('disabled'));
+    const feedback = document.getElementById(id + '-feedback');
+    if (correct) {
+      el.classList.add('correct');
+      feedback.textContent = '✅ Correct! Well done.';
+      feedback.className = 'quiz-feedback show correct';
+      addScore(10);
+    } else {
+      el.classList.add('wrong');
+      feedback.textContent = '❌ Not quite — review the content and try again in the final assessment.';
+      feedback.className = 'quiz-feedback show wrong';
+      opts.forEach(o => {
+        if (o.getAttribute('onclick')?.includes('true')) o.classList.add('correct');
+      });
+    }
+  }
+
+  // Scenario quiz
+  function answerScenario(num, isCorrect, btn) {
+    const result = document.getElementById('scenario' + num + '-result');
+    const btns = btn.parentElement.querySelectorAll('button');
+    btns.forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
+    if (isCorrect) {
+      btn.style.background = 'rgba(16,185,129,0.15)';
+      btn.style.borderColor = 'var(--accent3)';
+      btn.style.color = 'var(--accent3)';
+      result.innerHTML = '✅ Correct!';
+      result.style.color = 'var(--accent3)';
+      addScore(5);
+    } else {
+      btn.style.background = 'rgba(239,68,68,0.1)';
+      btn.style.borderColor = 'var(--danger)';
+      btn.style.color = 'var(--danger)';
+      result.innerHTML = '❌ Not quite — see the cards above for guidance.';
+      result.style.color = '#fca5a5';
+    }
+  }
+
+  // Hotspot toggle
+  function toggleHotspot(el) {
+    const detail = el.querySelector('.hotspot-detail');
+    const isOpen = detail.classList.contains('show');
+    document.querySelectorAll('.hotspot-detail').forEach(d => d.classList.remove('show'));
+    if (!isOpen) detail.classList.add('show');
+  }
+
+  // Accordion
+  function toggleAcc(head) {
+    const body = head.nextElementSibling;
+    const isOpen = head.classList.contains('open');
+    document.querySelectorAll('.acc-head').forEach(h => h.classList.remove('open'));
+    document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+    if (!isOpen) {
+      head.classList.add('open');
+      body.classList.add('open');
+    }
+  }
+
+  // Drag & Drop matching
+  function dragStart(e) {
+    draggedTerm = e.target.dataset.term;
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  }
+  function dragOver(e) {
+    e.preventDefault();
+    e.currentTarget.classList.add('over');
+  }
+  function dragLeave(e) {
+    e.currentTarget.classList.remove('over');
+  }
+  function dropTerm(e) {
+    e.preventDefault();
+    const slot = e.currentTarget;
+    slot.classList.remove('over');
+    document.querySelectorAll('.match-term').forEach(t => t.classList.remove('dragging'));
+    if (!draggedTerm) return;
+    const termEl = document.querySelector(`.match-term[data-term="${draggedTerm}"]`);
+    const slotLabel = slot.querySelector('.slot-label');
+    if (slotLabel) slotLabel.textContent = draggedTerm + ': ';
+    else {
+      const lbl = document.createElement('span');
+      lbl.className = 'slot-label';
+      lbl.textContent = draggedTerm + ': ';
+      slot.prepend(lbl);
+    }
+    slot.dataset.placed = draggedTerm;
+    if (termEl) termEl.style.opacity = '0.3';
+    draggedTerm = null;
+  }
+  function checkMatches() {
+    const slots = document.querySelectorAll('.match-slot');
+    let correct = 0;
+    slots.forEach(slot => {
+      slot.classList.remove('correct', 'wrong-ans');
+      if (slot.dataset.placed === slot.dataset.answer) {
+        slot.classList.add('correct');
+        correct++;
+      } else if (slot.dataset.placed) {
+        slot.classList.add('wrong-ans');
+      }
+    });
+    const fb = document.getElementById('match-feedback');
+    fb.style.display = 'block';
+    if (correct === slots.length) {
+      fb.style.background = 'rgba(16,185,129,0.1)';
+      fb.style.color = 'var(--accent3)';
+      fb.style.border = '1px solid rgba(16,185,129,0.2)';
+      fb.textContent = `✅ Perfect! All ${correct} matches correct.`;
+      addScore(15);
+    } else {
+      fb.style.background = 'rgba(239,68,68,0.08)';
+      fb.style.color = '#fca5a5';
+      fb.style.border = '1px solid rgba(239,68,68,0.2)';
+      fb.textContent = `${correct}/${slots.length} correct. Red slots need adjusting.`;
+    }
+  }
+  function resetMatches() {
+    document.querySelectorAll('.match-term').forEach(t => { t.style.opacity = '1'; });
+    document.querySelectorAll('.match-slot').forEach(s => {
+      s.classList.remove('correct', 'wrong-ans', 'over');
+      delete s.dataset.placed;
+      const lbl = s.querySelector('.slot-label');
+      if (lbl) lbl.textContent = '? ';
+    });
+    document.getElementById('match-feedback').style.display = 'none';
+  }
+
+  // Final quiz
+  function finalQ(qnum, el, correct) {
+    const opts = el.parentElement.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.classList.add('disabled'));
+    const feedback = document.getElementById('fq' + qnum + '-feedback');
+    if (correct) {
+      el.classList.add('correct');
+      feedback.textContent = '✅ Correct!';
+      feedback.className = 'quiz-feedback show correct';
+      fqScore++;
+      addScore(15);
+    } else {
+      el.classList.add('wrong');
+      feedback.textContent = '❌ Not quite.';
+      feedback.className = 'quiz-feedback show wrong';
+      opts.forEach(o => {
+        if (o.getAttribute('onclick')?.includes('true')) o.classList.add('correct');
+      });
+    }
+    setTimeout(() => {
+      if (qnum < fqTotal) {
+        document.getElementById('fq' + qnum).style.display = 'none';
+        document.getElementById('fq' + (qnum + 1)).style.display = 'block';
+        document.getElementById('fq-counter').textContent = `Question ${qnum + 1} of ${fqTotal}`;
+      } else {
+        showFinalResult();
+      }
+    }, 1200);
+  }
+
+  function showFinalResult() {
+    document.getElementById('fq-counter').style.display = 'none';
+    const pct = Math.round((fqScore / fqTotal) * 100);
+    const passed = pct >= 70;
+    const result = document.getElementById('fq-result');
+    result.style.display = 'block';
+    result.innerHTML = `
+      <div style="background:${passed ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.08)'};border:1px solid ${passed ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:48px;font-weight:800;color:${passed ? 'var(--blue)' : 'var(--danger)'};">${pct}%</div>
+        <div style="font-size:16px;font-weight:600;margin-bottom:8px;">${passed ? '🎉 Passed!' : '❌ Not passed'}</div>
+        <div style="font-size:16px;color:var(--muted);">${fqScore}/${fqTotal} correct · ${passed ? 'Congratulations on completing the course!' : 'Review the modules and try again.'}</div>
+        ${passed ? `<button class="btn btn-primary" onclick="goto(7)" style="margin-top:16px;">View Results →</button>` : `<button class="btn btn-secondary" onclick="restartQuiz()" style="margin-top:16px;">↺ Retry Assessment</button>`}
+      </div>`;
+    markDone(6);
+    if (passed) {
+      document.getElementById('finalScoreDisplay').textContent = pct + '%';
+    }
+  }
+
+  function restartQuiz() {
+    fqScore = 0; fqCurrent = 1;
+    for (let i = 1; i <= fqTotal; i++) {
+      const q = document.getElementById('fq' + i);
+      q.style.display = i === 1 ? 'block' : 'none';
+      q.querySelectorAll('.quiz-opt').forEach(o => {
+        o.classList.remove('correct','wrong','disabled');
+      });
+      const fb = document.getElementById('fq' + i + '-feedback');
+      if (fb) { fb.className = 'quiz-feedback'; fb.textContent = ''; }
+    }
+    document.getElementById('fq-result').style.display = 'none';
+    document.getElementById('fq-counter').style.display = 'block';
+    document.getElementById('fq-counter').textContent = 'Question 1 of 6';
+  }
+
+  function restartCourse() {
+    score = 0;
+    document.getElementById('scoreDisplay').textContent = '0';
+    completedSlides.clear();
+    completedSlides.add(0);
+    for (let i = 0; i < 8; i++) {
+      const c = document.getElementById('check' + i);
+      if (c) c.classList.remove('done');
+    }
+    restartQuiz();
+    goto(0);
+    updateProgress();
+  }
+
+  let isDark = false;
+  function toggleTheme() {
+    isDark = !isDark;
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+    document.getElementById('themeBtn').textContent = isDark ? '☀️ Light' : '🌙 Dark';
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>
