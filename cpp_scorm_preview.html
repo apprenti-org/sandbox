@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Conclusion & Reflection — C++ Coding Booster Intensive</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== FSI COLOUR TOKENS ===== */
+:root {
+  --bg:        #faf9f7;
+  --surface:   #ffffff;
+  --surface2:  #f2f0ec;
+  --border:    #e2ddd6;
+  --blue:      #2233cc;
+  --coral:     #f05a52;
+  --accent3:   #1a9e6e;
+  --text:      #1a1a2e;
+  --text-body: #3d3d52;
+  --muted:     #8a8a9a;
+  --danger:    #dc2626;
+  --warning:   #d97706;
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ===== TYPOGRAPHY ===== */
+h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--blue); line-height: 1.3; }
+h1 { font-size: 34px; font-weight: 800; margin-bottom: 16px; }
+h2 { font-size: 26px; font-weight: 700; margin-bottom: 12px; }
+h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+
+p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-body);
+  margin-bottom: 16px;
+  max-width: 68ch;
+}
+
+.lead {
+  font-family: 'Lora', serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--coral);
+  background: rgba(240,90,82,0.08);
+  border: 1px solid rgba(240,90,82,0.25);
+  border-radius: 4px;
+  padding: 3px 10px;
+  margin-bottom: 16px;
+}
+
+.chip {
+  display: inline-block;
+  background: rgba(34,51,204,0.07);
+  border: 1px solid rgba(34,51,204,0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--blue);
+  margin: 3px;
+  cursor: default;
+  transition: transform 0.2s cubic-bezier(0.175,0.885,0.32,1.275), background 0.2s, box-shadow 0.2s;
+}
+.chip:hover {
+  transform: scale(1.1);
+  background: rgba(34,51,204,0.13);
+  box-shadow: 0 4px 14px rgba(34,51,204,0.15);
+}
+
+.divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #1a28b0; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(34,51,204,0.3); }
+.btn-primary:disabled { opacity: 0.38; cursor: not-allowed; }
+.btn-coral { background: var(--coral); color: #fff; }
+.btn-coral:hover { background: #d94840; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(240,90,82,0.3); }
+
+/* ===== CARDS ===== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { border-color: var(--coral); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(240,90,82,0.1); }
+.card-icon { font-size: 26px; margin-bottom: 10px; }
+.card h3 { font-size: 15px; color: var(--blue); margin-bottom: 6px; }
+.card p { font-size: 14px; margin: 0; color: var(--text-body); max-width: none; line-height: 1.5; }
+.card-blue  { border-top: 3px solid var(--blue); }
+.card-coral { border-top: 3px solid var(--coral); }
+
+/* ===== CALLOUTS ===== */
+.callout {
+  border-left: 3px solid var(--blue);
+  background: rgba(34,51,204,0.04);
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  margin: 20px 0;
+}
+.callout p { margin: 0; max-width: none; }
+.callout.coral   { border-color: var(--coral); background: rgba(240,90,82,0.05); }
+.callout.success { border-color: var(--accent3); background: rgba(26,158,110,0.05); }
+
+/* ===== SCROLL PROGRESS ===== */
+#scroll-progress {
+  position: fixed; top:0; left:0;
+  width: 0%; height: 4px;
+  background: linear-gradient(90deg, var(--blue), var(--coral));
+  z-index: 1000;
+  border-radius: 0 99px 99px 0;
+  transition: width 0.2s ease;
+}
+
+/* ===== LAYOUT ===== */
+.container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+/* ===== TOP BAR ===== */
+#topbar {
+  position: sticky; top:0;
+  background: rgba(250,249,247,0.93);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  z-index: 200;
+  padding: 10px 0;
+}
+.topbar-inner {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 16px;
+}
+.topbar-title { font-size: 13px; font-weight: 700; color: var(--blue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-prog { flex:1; max-width: 200px; }
+.progress-bar { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--coral)); border-radius: 99px; transition: width 0.4s ease; }
+.topbar-status { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+
+/* ===== HEADER ===== */
+header { padding: 56px 0 40px; border-bottom: 1px solid var(--border); }
+.header-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.header-eyebrow .tag { margin: 0; }
+.header-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: 3px 10px; font-size: 12px; color: var(--muted);
+}
+header h1 { font-size: clamp(28px,5vw,46px); color: var(--blue); line-height: 1.15; margin-bottom: 16px; }
+header h1 span { color: var(--coral); }
+.header-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+
+/* ===== SECTIONS ===== */
+section {
+  padding: 48px 0; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+section.visible { opacity:1; transform:translateY(0); }
+.section-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--coral); margin-bottom: 8px; }
+
+/* ===== CODE BLOCK ===== */
+.code-block {
+  background: #1a1a2e;
+  border: 1px solid #2d2d4e;
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  overflow-x: auto;
+  position: relative;
+}
+.code-block::before {
+  content: 'C++'; position: absolute; top: 10px; right: 14px;
+  font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.2); letter-spacing: 0.1em;
+}
+.cl { opacity:0; animation: cline 0.4s forwards; display: block; }
+.cl:nth-child(1){animation-delay:0.1s} .cl:nth-child(2){animation-delay:0.3s}
+.cl:nth-child(3){animation-delay:0.5s} .cl:nth-child(4){animation-delay:0.7s}
+.cl:nth-child(5){animation-delay:0.9s}
+@keyframes cline { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:none} }
+.cc{color:#6a7fa8} .ck{color:#7eb6ff} .cs{color:#ffa07a} .cv{color:#98e26e} .cw{color:#c8d6e8}
+
+/* ===== MANTRA ===== */
+.mantra {
+  background: linear-gradient(135deg,rgba(34,51,204,0.05),rgba(240,90,82,0.05));
+  border: 1px solid rgba(34,51,204,0.15);
+  border-radius: 12px;
+  padding: 32px 36px;
+  margin: 24px 0;
+  text-align: center;
+}
+.mantra p {
+  font-family: 'Lora', serif;
+  font-size: clamp(17px,2.5vw,22px);
+  color: var(--text);
+  line-height: 1.6; max-width: none; margin: 0;
+}
+.mantra strong { color: var(--blue); }
+.mantra em { color: var(--coral); font-style: normal; font-weight: 600; }
+
+/* ===== HABITS ===== */
+.habits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 20px 0; }
+.habit-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  font-size: 14px; font-weight: 500; color: var(--text-body);
+  transition: all 0.2s;
+}
+.habit-item:hover { border-color: var(--blue); color: var(--text); transform: translateX(3px); }
+.habit-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); flex-shrink: 0; }
+
+/* ===== REFLECTION LIST ===== */
+.reflection-list { list-style: none; margin: 16px 0; }
+.reflection-list li {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--border);
+  transition: all 0.15s;
+}
+.reflection-list li:hover .q-text { color: var(--blue); }
+.q-num { font-size: 12px; font-weight: 700; color: var(--coral); min-width: 22px; padding-top: 2px; font-family: 'Courier New', monospace; }
+.q-text { font-size: 16px; color: var(--text-body); transition: color 0.15s; line-height: 1.5; }
+
+/* ===== ACCORDION ===== */
+.accordion { margin: 16px 0; }
+.acc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 18px; cursor: pointer;
+  font-size: 15px; font-weight: 500; color: var(--text);
+  transition: border-color 0.2s; margin-bottom: 2px;
+}
+.acc-head:hover { border-color: var(--blue); }
+.acc-head.open { border-color: var(--blue); border-radius: 8px 8px 0 0; margin-bottom: 0; }
+.acc-arrow { font-size: 11px; color: var(--muted); transition: transform 0.25s; }
+.acc-head.open .acc-arrow { transform: rotate(180deg); }
+.acc-body {
+  display: none;
+  background: rgba(34,51,204,0.03); border: 1px solid var(--blue); border-top: none;
+  border-radius: 0 0 8px 8px; padding: 16px 18px;
+  font-size: 15px; line-height: 1.6; color: var(--text-body); margin-bottom: 4px;
+}
+.acc-body.open { display: block; animation: fadeSlide 0.3s ease; }
+@keyframes fadeSlide { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+/* ===== QUIZ ===== */
+.quiz-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin: 20px 0;
+}
+.quiz-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 24px;
+}
+.quiz-header h3 { margin: 0; font-size: 13px; color: var(--muted); font-weight: 700; letter-spacing: 0.08em; }
+.quiz-prog-text { font-size: 13px; font-weight: 700; color: var(--blue); }
+
+.question-block { display: none; }
+.question-block.active { display: block; animation: fadeSlide 0.35s ease; }
+
+.question-text { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 20px; line-height: 1.4; }
+
+.options { display: flex; flex-direction: column; gap: 8px; }
+.option-btn {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-body); padding: 12px 16px; text-align: left;
+  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px; font-weight: 400;
+  transition: all 0.18s;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.option-btn:hover:not(:disabled) { border-color: var(--blue); background: rgba(34,51,204,0.04); color: var(--text); }
+.option-btn.correct { border-color: var(--accent3); background: rgba(26,158,110,0.07); color: #155f43; font-weight: 600; }
+.option-btn.incorrect { border-color: var(--danger); background: rgba(220,38,38,0.06); color: var(--danger); }
+.option-btn:disabled { cursor: default; }
+.opt-letter { font-size: 12px; font-weight: 700; color: var(--blue); min-width: 18px; padding-top: 2px; font-family: 'Courier New', monospace; }
+.option-btn.correct .opt-letter { color: var(--accent3); }
+.option-btn.incorrect .opt-letter { color: var(--danger); }
+
+.feedback-box {
+  display: none;
+  margin-top: 12px; padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  font-size: 14px; line-height: 1.5;
+}
+.feedback-box.show { display: block; animation: fadeSlide 0.3s ease; }
+.feedback-box.correct  { border-left: 3px solid var(--accent3); background: rgba(26,158,110,0.06); color: #155f43; }
+.feedback-box.incorrect { border-left: 3px solid var(--danger); background: rgba(220,38,38,0.05); color: var(--danger); }
+
+.quiz-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
+}
+.quiz-hint { font-size: 13px; color: var(--muted); }
+.quiz-hint.ok  { color: var(--accent3); font-weight: 600; }
+.quiz-hint.err { color: var(--danger); font-weight: 600; }
+
+/* ===== SCORE RESULT ===== */
+#quiz-result { display: none; text-align: center; padding: 12px 0; }
+#quiz-result.show { display: block; animation: fadeSlide 0.4s ease; }
+.score-ring { width: 120px; height: 120px; margin: 0 auto 20px; position: relative; }
+.score-ring svg { transform: rotate(-90deg); }
+.ring-bg  { fill: none; stroke: var(--border); stroke-width: 7; }
+.ring-fill { fill: none; stroke: var(--blue); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283; transition: stroke-dashoffset 1s ease; }
+.score-label { position: absolute; inset:0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-num { font-size: 26px; font-weight: 800; color: var(--blue); line-height: 1; }
+.score-pct-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+.result-title { font-size: 22px; font-weight: 800; color: var(--blue); margin-bottom: 6px; }
+.result-sub { font-size: 15px; color: var(--text-body); max-width: 52ch; margin: 0 auto; }
+
+/* ===== COMPLETION ===== */
+#completion-section { text-align: center; padding: 48px 0 60px; }
+.completion-icon {
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg,rgba(34,51,204,0.1),rgba(240,90,82,0.1));
+  border: 1px solid rgba(34,51,204,0.2); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px; font-size: 36px;
+  animation: pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes pop { from{transform:scale(0)} to{transform:scale(1)} }
+#completion-section h2 { font-size: 30px; margin-bottom: 12px; }
+#completion-section p { max-width: 54ch; margin: 0 auto 12px; text-align: center; }
+#completion-msg {
+  display: none; margin-top: 16px;
+  padding: 12px 20px;
+  background: rgba(26,158,110,0.08); border: 1px solid rgba(26,158,110,0.3);
+  border-radius: 8px; color: var(--accent3); font-weight: 600; font-size: 14px;
+  max-width: 360px; margin: 16px auto 0;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  header { padding: 36px 0 28px; }
+  section { padding: 36px 0; }
+  .quiz-wrapper { padding: 20px 16px; }
+  .topbar-prog { display: none; }
+  .habits-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- Sticky top bar -->
+<div id="topbar">
+  <div class="container">
+    <div class="topbar-inner">
+      <div class="topbar-title">C++ Coding Booster Intensive — Conclusion &amp; Reflection</div>
+      <div class="topbar-prog">
+        <div class="progress-bar">
+          <div class="progress-bar-fill" id="top-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="topbar-status" id="status-tag">In Progress</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header id="sec-0">
+    <div class="header-eyebrow">
+      <span class="tag">Final Module</span>
+      <span class="header-badge">⏱ ~10 min</span>
+    </div>
+    <h1>Course Conclusion<br><span>&amp; Reflection</span></h1>
+    <p class="lead">You have moved beyond syntax and into the realities of systems engineering. This module consolidates what you have built — and frames what comes next.</p>
+    <div class="header-chips">
+      <span class="chip">Memory Management</span>
+      <span class="chip">TPS Logic</span>
+      <span class="chip">Test-Driven Development</span>
+      <span class="chip">Legacy C++</span>
+      <span class="chip">Systems Thinking</span>
+      <span class="chip">AI as Engineering Partner</span>
+    </div>
+  </header>
+
+  <!-- SECTION 1 -->
+  <section id="sec-1">
+    <div class="section-eyebrow">01 — What You Built</div>
+    <h2>Beyond the Abstraction Layer</h2>
+    <p>Over the past course, you moved beyond learning syntax and into the realities of systems engineering. You explored how C++ operates beneath abstraction layers — how memory is allocated, how data moves through systems, and how seemingly small implementation choices can create stability or failure within high-throughput environments.</p>
+
+    <div class="code-block">
+      <span class="cl"><span class="cc">// The progression you completed:</span></span>
+      <span class="cl"><span class="ck">class</span> <span class="cw">Engineer</span> : <span class="ck">public</span> <span class="cw">Programmer</span> {</span>
+      <span class="cl">&nbsp;&nbsp;<span class="cv">pointers</span>, <span class="cv">memory_management</span>, <span class="cv">TPS_logic</span>,</span>
+      <span class="cl">&nbsp;&nbsp;<span class="cs">"incident_analysis"</span>, <span class="cs">"controlled_deployment"</span></span>
+      <span class="cl">}; <span class="cc">// not academic — operational</span></span>
+    </div>
+
+    <p>You worked with pointers, manual memory management, legacy workflows, and Transaction Processing System (TPS) logic — not as academic exercises, but as problems framed through <strong>operational responsibility</strong>.</p>
+
+    <div class="callout">
+      <p>By applying Test-Driven Development, debugging legacy logic, and submitting a controlled infrastructure patch, you simulated the full lifecycle of professional engineering work — from investigation to deployment.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section id="sec-2">
+    <div class="section-eyebrow">02 — The Critical Shift</div>
+    <h2>Engineering Is Protecting Systems</h2>
+    <p>This intensive emphasized a fundamental professional shift that separates programmers from engineers.</p>
+
+    <div class="mantra">
+      <p>Engineering is not simply <strong>writing code.</strong><br>Engineering is <em>protecting systems.</em></p>
+    </div>
+
+    <p>Throughout the course, you practiced thinking like a support engineer responsible for infrastructure that cannot fail. You analyzed incidents through support tickets, validated assumptions through testing, reasoned about risk before deployment, and implemented controlled fixes designed to preserve system integrity.</p>
+
+    <h3>How Real Environments Operate</h3>
+    <div class="card-grid">
+      <div class="card card-blue">
+        <div class="card-icon">🌐</div>
+        <h3>Ecosystems, Not Isolation</h3>
+        <p>Code exists inside interconnected systems with upstream and downstream dependencies.</p>
+      </div>
+      <div class="card card-coral">
+        <div class="card-icon">🔗</div>
+        <h3>Respect Dependencies</h3>
+        <p>Every change must account for what it touches beyond its own immediate scope.</p>
+      </div>
+      <div class="card card-blue">
+        <div class="card-icon">⚖️</div>
+        <h3>Stability Over Speed</h3>
+        <p>In production, a slower correct fix is always better than a fast fragile one.</p>
+      </div>
+      <div class="card card-coral">
+        <div class="card-icon">🧠</div>
+        <h3>Understanding Over Memorization</h3>
+        <p>Real incidents don't come with checklists — they require deep reasoning.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section id="sec-3">
+    <div class="section-eyebrow">03 — Professional Takeaways</div>
+    <h2>What You Can Do Now</h2>
+    <p>By completing this intensive, you have strengthened six foundational capabilities essential for engineers supporting critical infrastructure where reliability, traceability, and precision are non-negotiable.</p>
+
+    <div class="accordion">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>🔩 &nbsp;Reason about low-level system behavior</span>
+        <span class="acc-arrow">▾</span>
+      </div>
+      <div class="acc-body">
+        You can now trace how C++ code interacts with memory at the hardware interface level — understanding pointer arithmetic, stack vs. heap allocation, and the consequences of mismanaged resources in live systems.
+      </div>
+
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>🗂️ &nbsp;Work safely within legacy C++ environments</span>
+        <span class="acc-arrow">▾</span>
+      </div>
+      <div class="acc-body">
+        Legacy codebases are not puzzles to solve in isolation — they are ecosystems with history. You practiced navigating unfamiliar code, making minimal-footprint changes, and respecting existing patterns without introducing new failure modes.
+      </div>
+
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>🔍 &nbsp;Diagnose memory and data integrity issues</span>
+        <span class="acc-arrow">▾</span>
+      </div>
+      <div class="acc-body">
+        You developed the skill to identify memory leaks, buffer issues, and data corruption at the root — not just at the symptom level. This is the difference between patching a system and truly fixing it.
+      </div>
+
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>🧪 &nbsp;Apply disciplined debugging and validation practices</span>
+        <span class="acc-arrow">▾</span>
+      </div>
+      <div class="acc-body">
+        TDD and structured debugging were applied throughout this course as professional habits, not academic exercises. You learned to prove correctness before trusting it — and to document that proof.
+      </div>
+
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>🚀 &nbsp;Deliver production-ready changes through structured workflows</span>
+        <span class="acc-arrow">▾</span>
+      </div>
+      <div class="acc-body">
+        Through structured workflows — from ticket investigation to controlled patch submission — you completed a full deployment lifecycle with documented reasoning and validated outcomes.
+      </div>
+
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>🤖 &nbsp;Use AI as an engineering partner</span>
+        <span class="acc-arrow">▾</span>
+      </div>
+      <div class="acc-body">
+        Modern engineers collaborate with intelligent tools to validate logic, explain unfamiliar code, and accelerate debugging — while maintaining full accountability for every decision and outcome. AI amplifies the engineer; it does not replace them.
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section id="sec-4">
+    <div class="section-eyebrow">04 — Systems Thinking</div>
+    <h2>From Programmer to Systems Thinker</h2>
+    <p>A key outcome of this intensive is developing a <strong>mental model</strong> rather than a checklist of techniques. The five questions below represent the difference between writing working code and maintaining production systems.</p>
+
+    <ul class="reflection-list">
+      <li><span class="q-num">Q1</span><span class="q-text">How does my code interact with memory?</span></li>
+      <li><span class="q-num">Q2</span><span class="q-text">What assumptions am I making about data representation?</span></li>
+      <li><span class="q-num">Q3</span><span class="q-text">What happens if this logic fails under production load?</span></li>
+      <li><span class="q-num">Q4</span><span class="q-text">How do I prove my change is safe?</span></li>
+      <li><span class="q-num">Q5</span><span class="q-text">What protects the system after I leave?</span></li>
+    </ul>
+
+    <div class="callout coral" style="margin-top:24px;">
+      <p>You practiced using AI as an engineering partner — not to replace understanding, but to <strong>strengthen reasoning</strong>. The engineer remains fully accountable for every outcome.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section id="sec-5">
+    <div class="section-eyebrow">05 — Carry Forward</div>
+    <h2>Moving Forward</h2>
+    <p>The learning in this course does not end here. Legacy systems evolve slowly, but engineers must evolve continuously. Mastery comes from repeated exposure to unfamiliar codebases, thoughtful debugging, and disciplined problem-solving under constraint.</p>
+
+    <h3>The Engineer's Habits</h3>
+    <div class="habits-grid">
+      <div class="habit-item"><span class="habit-dot"></span>Investigate before changing</div>
+      <div class="habit-item"><span class="habit-dot"></span>Test before trusting</div>
+      <div class="habit-item"><span class="habit-dot"></span>Validate before deploying</div>
+      <div class="habit-item"><span class="habit-dot"></span>Document your reasoning</div>
+      <div class="habit-item"><span class="habit-dot"></span>Protect the system first</div>
+      <div class="habit-item"><span class="habit-dot"></span>Think in dependencies</div>
+    </div>
+
+    <div class="mantra" style="margin-top:28px;">
+      <p>In production environments, <strong>success is rarely visible</strong> —<br>but <em>stability is everything.</em></p>
+    </div>
+
+    <p style="margin-top:20px;">Your role is no longer just to make software work.<br><strong>Your role is to ensure systems continue working tomorrow.</strong></p>
+  </section>
+
+  <!-- SECTION 6: QUIZ -->
+  <section id="sec-6">
+    <div class="section-eyebrow">06 — Knowledge Check</div>
+    <h2>Reflection Assessment</h2>
+    <p>Five questions to confirm your understanding of the core engineering principles from this intensive. A score of 80% or higher records a pass with your LMS.</p>
+
+    <div class="quiz-wrapper">
+      <div class="quiz-header">
+        <h3>5 QUESTIONS</h3>
+        <span class="quiz-prog-text" id="q-progress">Question 1 of 5</span>
+      </div>
+
+      <!-- Q1 -->
+      <div class="question-block active" id="q1">
+        <div class="question-text">What is the primary mindset shift emphasized in this intensive?</div>
+        <div class="options">
+          <button class="option-btn" onclick="answer(this,false,'q1','Speed matters, but the distinction goes deeper — it is about operational responsibility for systems.')"><span class="opt-letter">A</span>Writing faster, more efficient algorithms</button>
+          <button class="option-btn" onclick="answer(this,true,'q1','Correct. The course reframes engineering as protecting systems — not just making code execute.')"><span class="opt-letter">B</span>Shifting from writing code to protecting systems</button>
+          <button class="option-btn" onclick="answer(this,false,'q1','Memorization is explicitly de-prioritised in favour of understanding and deep reasoning.')"><span class="opt-letter">C</span>Memorizing C++ syntax and standard library patterns</button>
+          <button class="option-btn" onclick="answer(this,false,'q1','Legacy code exists throughout production — engineers must navigate it carefully, not avoid it.')"><span class="opt-letter">D</span>Avoiding legacy codebases in production environments</button>
+        </div>
+        <div class="feedback-box" id="fb-q1"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question-block" id="q2">
+        <div class="question-text">When should you validate a change before deploying to production?</div>
+        <div class="options">
+          <button class="option-btn" onclick="answer(this,false,'q2','Relying on trust without testing is precisely how failures reach production systems.')"><span class="opt-letter">A</span>Only if you don't trust the original developer</button>
+          <button class="option-btn" onclick="answer(this,false,'q2','Deployment timelines should never dictate whether safety validation occurs.')"><span class="opt-letter">B</span>Only when the deployment is time-sensitive</button>
+          <button class="option-btn" onclick="answer(this,true,'q2','Correct. Validate before deploying is a non-negotiable engineer\'s habit — every change must be proven safe.')"><span class="opt-letter">C</span>Always — validation is required before every deployment</button>
+          <button class="option-btn" onclick="answer(this,false,'q2','Risk cannot be accurately estimated using line count as a proxy metric.')"><span class="opt-letter">D</span>Only for changes over 100 lines of code</button>
+        </div>
+        <div class="feedback-box" id="fb-q2"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="question-block" id="q3">
+        <div class="question-text">Why is understanding more important than memorization in systems engineering?</div>
+        <div class="options">
+          <button class="option-btn" onclick="answer(this,false,'q3','Documentation is helpful, but the distinction is about reasoning capability — not reference materials.')"><span class="opt-letter">A</span>Because documentation replaces the need to retain details</button>
+          <button class="option-btn" onclick="answer(this,true,'q3','Correct. Engineers face novel failure conditions in production — deep understanding allows reasoning where no reference exists.')"><span class="opt-letter">B</span>Because engineers must reason about novel failures without a lookup table</button>
+          <button class="option-btn" onclick="answer(this,false,'q3','Complexity level is not the determining factor in this principle.')"><span class="opt-letter">C</span>Because C++ is simply too large to memorize fully</button>
+          <button class="option-btn" onclick="answer(this,false,'q3','AI tools support reasoning but do not substitute for the engineer\'s own understanding.')"><span class="opt-letter">D</span>Because AI tools handle all memory recall tasks automatically</button>
+        </div>
+        <div class="feedback-box" id="fb-q3"></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="question-block" id="q4">
+        <div class="question-text">What does "code exists inside ecosystems, not isolation" mean for deployment decisions?</div>
+        <div class="options">
+          <button class="option-btn" onclick="answer(this,false,'q4','Team hierarchy matters for process, but the principle is about technical dependency chains.')"><span class="opt-letter">A</span>Changes should only be approved by senior engineers</button>
+          <button class="option-btn" onclick="answer(this,false,'q4','Isolated testing has value, but the ecosystem principle applies across the full lifecycle.')"><span class="opt-letter">B</span>All testing must be done in isolated environments only</button>
+          <button class="option-btn" onclick="answer(this,true,'q4','Correct. Every change exists within a network of downstream systems — ignoring those dependencies is how cascading failures occur.')"><span class="opt-letter">C</span>Changes must consider downstream dependencies that your code affects</button>
+          <button class="option-btn" onclick="answer(this,false,'q4','Legacy code is a permanent fixture of production — it must be worked within carefully.')"><span class="opt-letter">D</span>Legacy code must always be replaced before adding new features</button>
+        </div>
+        <div class="feedback-box" id="fb-q4"></div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="question-block" id="q5">
+        <div class="question-text">How should engineers use AI tools in their professional workflow?</div>
+        <div class="options">
+          <button class="option-btn" onclick="answer(this,false,'q5','Outsourcing decisions removes the engineer\'s accountability — which is a core requirement of the role.')"><span class="opt-letter">A</span>To outsource decision-making and deployment approvals</button>
+          <button class="option-btn" onclick="answer(this,false,'q5','Replacing debugging with AI removes the understanding required to maintain accountability.')"><span class="opt-letter">B</span>To replace manual debugging entirely</button>
+          <button class="option-btn" onclick="answer(this,false,'q5','AI tools exist specifically to help with unfamiliar code — avoidance defeats the purpose.')"><span class="opt-letter">C</span>To avoid working with unfamiliar codebases</button>
+          <button class="option-btn" onclick="answer(this,true,'q5','Correct. AI amplifies reasoning and accelerates debugging — but the engineer remains fully accountable for every outcome.')"><span class="opt-letter">D</span>As a partner to validate logic and accelerate debugging, while maintaining full accountability</button>
+        </div>
+        <div class="feedback-box" id="fb-q5"></div>
+      </div>
+
+      <!-- Result panel -->
+      <div id="quiz-result">
+        <div class="score-ring">
+          <svg viewBox="0 0 100 100" width="120" height="120">
+            <circle class="ring-bg" cx="50" cy="50" r="45"/>
+            <circle class="ring-fill" id="ring-fill" cx="50" cy="50" r="45"/>
+          </svg>
+          <div class="score-label">
+            <div class="score-num" id="score-display">0/5</div>
+            <div class="score-pct-label" id="score-pct">0%</div>
+          </div>
+        </div>
+        <div class="result-title" id="result-msg">—</div>
+        <p class="result-sub" id="result-sub">—</p>
+      </div>
+
+      <div class="quiz-footer" id="quiz-footer">
+        <span class="quiz-hint" id="q-counter">Select an answer to continue</span>
+        <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 7: COMPLETION -->
+  <section id="sec-7">
+    <div id="completion-section">
+      <div class="completion-icon">🎓</div>
+      <div class="section-eyebrow" style="text-align:center; margin-bottom:12px;">Course Complete</div>
+      <h2>Systems Engineer. <span style="color:var(--coral)">Certified.</span></h2>
+      <p>You have completed the C++ Coding Booster Intensive. Carry these principles back to your engineering environment — investigate, test, validate, document, and protect.</p>
+      <p class="lead" style="text-align:center; color:var(--muted); font-size:16px; font-family:'Lora',serif;">"Success is rarely visible — but stability is everything."</p>
+      <button class="btn btn-coral" onclick="completeCourse()" id="complete-btn" style="margin-top:8px;">
+        ✓ Mark Course Complete
+      </button>
+      <div id="completion-msg">✓ Completion recorded — SCORM status: Passed</div>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+<script>
+// ── SCORM 1.2 ──────────────────────────────────────────────────────────────
+var scormAPI = null;
+function findSCORMAPI(w) {
+  if (w.API) return w.API;
+  if (w.parent && w.parent !== w) return findSCORMAPI(w.parent);
+  if (w.opener) return findSCORMAPI(w.opener);
+  return null;
+}
+function initSCORM() {
+  scormAPI = findSCORMAPI(window);
+  if (scormAPI) { scormAPI.LMSInitialize(''); scormAPI.LMSSetValue('cmi.core.lesson_status','incomplete'); scormAPI.LMSCommit(''); }
+}
+function setSCORM(k,v) { if (scormAPI) { scormAPI.LMSSetValue(k,v); scormAPI.LMSCommit(''); } }
+window.addEventListener('beforeunload', () => { if (scormAPI) scormAPI.LMSFinalize(''); });
+initSCORM();
+
+// ── SCROLL ─────────────────────────────────────────────────────────────────
+function onScroll() {
+  const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('scroll-progress').style.width = pct + '%';
+  document.getElementById('top-fill').style.width = pct + '%';
+  document.querySelectorAll('section').forEach(s => {
+    if (s.getBoundingClientRect().top < window.innerHeight * 0.9) s.classList.add('visible');
+  });
+}
+window.addEventListener('scroll', onScroll);
+window.addEventListener('load', onScroll);
+
+// ── ACCORDION ──────────────────────────────────────────────────────────────
+function toggleAcc(head) {
+  const body = head.nextElementSibling;
+  const open = head.classList.contains('open');
+  document.querySelectorAll('.acc-head').forEach(h => { h.classList.remove('open'); h.nextElementSibling.classList.remove('open'); });
+  if (!open) { head.classList.add('open'); body.classList.add('open'); }
+}
+
+// ── QUIZ ───────────────────────────────────────────────────────────────────
+let currentQ = 1, score = 0;
+const answered = [false,false,false,false,false];
+
+function answer(btn, correct, qId, feedback) {
+  const idx = parseInt(qId.replace('q','')) - 1;
+  if (answered[idx]) return;
+  answered[idx] = true;
+  btn.closest('.options').querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+  const fb = document.getElementById('fb-'+qId);
+  fb.textContent = feedback;
+  const counter = document.getElementById('q-counter');
+  if (correct) {
+    btn.classList.add('correct');
+    fb.className = 'feedback-box show correct';
+    score++;
+    counter.textContent = '✓ Correct';
+    counter.className = 'quiz-hint ok';
+  } else {
+    btn.classList.add('incorrect');
+    fb.className = 'feedback-box show incorrect';
+    counter.textContent = '✗ Review the material';
+    counter.className = 'quiz-hint err';
+  }
+  document.getElementById('next-btn').disabled = false;
+}
+
+function nextQuestion() {
+  if (currentQ < 5) {
+    document.getElementById('q'+currentQ).classList.remove('active');
+    currentQ++;
+    document.getElementById('q'+currentQ).classList.add('active');
+    document.getElementById('q-progress').textContent = 'Question '+currentQ+' of 5';
+    document.getElementById('next-btn').disabled = true;
+    const c = document.getElementById('q-counter');
+    c.textContent = 'Select an answer to continue';
+    c.className = 'quiz-hint';
+    if (currentQ === 5) document.getElementById('next-btn').textContent = 'See Results →';
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.querySelectorAll('.question-block').forEach(q => q.style.display='none');
+  document.getElementById('quiz-footer').style.display='none';
+  const pct = Math.round((score/5)*100);
+  document.getElementById('score-display').textContent = score+'/5';
+  document.getElementById('score-pct').textContent = pct+'%';
+  const [title,sub] = score===5
+    ? ['Systems Thinker 🎯','Perfect score. You have fully internalized the engineer\'s mindset.']
+    : score>=3
+    ? ['Solid Foundation','Strong understanding. Review the flagged areas before your next deployment.']
+    : ['Keep Studying','Revisit the core principles — especially the engineer\'s habits and deployment guidelines.'];
+  document.getElementById('result-msg').textContent = title;
+  document.getElementById('result-sub').textContent = sub;
+  const r = document.getElementById('quiz-result');
+  r.style.display = 'block';
+  r.classList.add('show');
+  setTimeout(() => {
+    const fill = document.getElementById('ring-fill');
+    fill.style.strokeDashoffset = 283-(283*pct/100);
+    fill.style.stroke = pct>=80 ? 'var(--accent3)' : pct>=60 ? 'var(--blue)' : 'var(--coral)';
+  }, 200);
+  setSCORM('cmi.core.score.raw', pct);
+  setSCORM('cmi.core.score.min','0');
+  setSCORM('cmi.core.score.max','100');
+  setSCORM('cmi.core.lesson_status', pct>=80 ? 'passed' : 'failed');
+  const st = document.getElementById('status-tag');
+  st.textContent = pct>=80 ? 'Assessment Passed ✓' : 'Assessment Complete';
+  st.style.color = pct>=80 ? 'var(--accent3)' : 'var(--warning)';
+}
+
+function completeCourse() {
+  setSCORM('cmi.core.lesson_status','passed');
+  setSCORM('cmi.completion_status','completed');
+  setSCORM('cmi.success_status','passed');
+  document.getElementById('complete-btn').style.display = 'none';
+  const msg = document.getElementById('completion-msg');
+  msg.style.display = 'block';
+  const st = document.getElementById('status-tag');
+  st.textContent = 'Complete ✓';
+  st.style.color = 'var(--accent3)';
+}
+</script>
+</body>
+</html>
